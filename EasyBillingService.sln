@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyBillingService", "EasyBillingService\EasyBillingService.csproj", "{DA04245B-50EB-4B72-A95C-7B34CA65BABA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA04245B-50EB-4B72-A95C-7B34CA65BABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA04245B-50EB-4B72-A95C-7B34CA65BABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA04245B-50EB-4B72-A95C-7B34CA65BABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA04245B-50EB-4B72-A95C-7B34CA65BABA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

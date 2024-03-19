@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using EasyBillingService.Extensions;
 using Microsoft.Office.Interop.Excel;
 using MiniExcelLibs;
 using MiniExcelLibs.Attributes;
@@ -25,9 +26,8 @@ namespace EasyBillingService
         {
            
             var excelApplication = new Microsoft.Office.Interop.Excel.Application();
-            excelApplication.Visible = true;
-
-			// Arbeitsmappe öffnen
+            
+            
 			object missing = Missing.Value;
             var path = "H:\\C# Projects\\EasyBillingService\\EasyBillingService\\bin\\Debug\\";
             
@@ -37,27 +37,19 @@ namespace EasyBillingService
 
             var sheet = workbook.ActiveSheet as Worksheet;
 
-            var cell = (double)sheet.Range["B3", "B3"].Value;
-
+            var cell = sheet.GetCellValue<double>("B2");
             cell++;
-            
-            
-            
-            
-           
-            
+            sheet.SetCellValue<double>("B2", cell);
             
             workbook.Save();
-			// Excel beenden
-
             
-            workbook.Close(SaveChanges: true);
+            
+            workbook.Close(SaveChanges: false);
             workbook = null;
             excelApplication.Quit();
             excelApplication = null;
             
-			Console.WriteLine("Beenden mit Return");
-			Console.ReadLine();
+            
 		}
 
         private void button1_Click(object sender, EventArgs e)
@@ -103,11 +95,6 @@ namespace EasyBillingService
         private void MainWindow_Load(object sender, EventArgs e)
         {
             
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-            throw new System.NotImplementedException();
         }
         
         

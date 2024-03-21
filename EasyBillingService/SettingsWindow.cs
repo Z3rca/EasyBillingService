@@ -26,12 +26,17 @@ namespace EasyBillingService
 
         private void TemplatePathTextChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
         
         public void UpdateBillingBookPath(string entry)
         {
             billingBookPathText.Text = entry;
+        }
+        
+        public void UpdateTemnplatePath(string entry)
+        {
+            TemplatePathTextBox.Text = entry;
         }
 
         private void billingBookText_TextChanged(object sender, EventArgs e)

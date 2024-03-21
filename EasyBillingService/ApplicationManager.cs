@@ -65,8 +65,13 @@ namespace EasyBillingService
             
             var newPath = dialog.FileName;
             _model.SetBillingBookPath(newPath);
-            
             _view.UpdateBillingAdressPath(newPath);
+            var entry = _model.RetrieveLastBillingNumber();
+            if (entry != null)
+            {
+                _view.SetLastEntryText((Entry)entry);
+            }
+            
         }
         
         public void ChangeTemplateFolder()
@@ -77,7 +82,7 @@ namespace EasyBillingService
             var newPath = dialog.SelectedPath;
             _model.SetTemplatePath(newPath);
             
-            _view.UpdateBillingAdressPath(newPath);
+            _view.UpdateTemplatePath(newPath);
         }
     }
 }

@@ -14,10 +14,11 @@ namespace EasyBillingService
 
         private string _lastOpenedFile;
 
+        private string _templatePath;
+
         public const string CONFIGURATIONFILEPATH = "..\\..\\configuration.cfg";
 
         private string _lastOpenedFileText = "lastOpenedFile = ";
-        
         private string _templatePathText = "templatePath = ";
 
         private double currentID;
@@ -97,7 +98,7 @@ namespace EasyBillingService
 
             double maximum = 0;
 
-            if (!billingIds.Any())
+            if (!entries.Any())
             {
                 return null;
             }
@@ -113,7 +114,7 @@ namespace EasyBillingService
             currentID = newestEntry.Id + 1;
             
             
-            workbook.Save();
+           // workbook.Save();
             workbook.Close(SaveChanges: false);
             workbook = null;
             excelApplication.Quit();
@@ -147,8 +148,8 @@ namespace EasyBillingService
         
         public void SetTemplatePath(string path)
         {
-            var newValue = _lastOpenedFileText+ path;
-            var oldValue = _lastOpenedFileText + (_lastOpenedFile);
+            var newValue = _templatePathText+ path;
+            var oldValue = _templatePathText + (_templatePath);
             if (File.Exists(CONFIGURATIONFILEPATH))
             {
                 var text = "";
@@ -160,6 +161,8 @@ namespace EasyBillingService
                 text = text.Replace(oldValue,newValue);
                 File.WriteAllText(CONFIGURATIONFILEPATH,text);
             }
+
+            _templatePath = path;
         }
     }
     

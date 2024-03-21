@@ -18,8 +18,8 @@ namespace EasyBillingService
         {
             _model = new ApplicationModel();
             _view = new ApplicationView();
-            
             _view.UpdateBillingAdressPath(_model.LastOpenedBillingAdressBook);
+            _view.UpdateTemplatePath(_model.TemplatepPath);
         }
         
         public static ApplicationManager Instance

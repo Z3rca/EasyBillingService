@@ -9,13 +9,9 @@ namespace EasyBillingService
 {
     public class ApplicationModel
     {
-        
         private string _path;
-
         private string _lastOpenedFile;
-
         private string _templatePath;
-
         public const string CONFIGURATIONFILEPATH = "..\\..\\configuration.cfg";
 
         private string _lastOpenedFileText = "lastOpenedFile = ";
@@ -25,6 +21,7 @@ namespace EasyBillingService
 
 
         public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_lastOpenedFile) ? "":_lastOpenedFile;
+        public string TemplatepPath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
         public ApplicationModel()
         {
             InitializeFormerFilePaths(); 
@@ -46,8 +43,12 @@ namespace EasyBillingService
                         if (line.StartsWith(_lastOpenedFileText))
                         {
                             _lastOpenedFile = line.Substring(_lastOpenedFileText.ToCharArray().Length);
-                            break;
                         }
+                        if (line.StartsWith(_templatePathText))
+                        {
+                            _templatePath = line.Substring(_templatePathText.ToCharArray().Length);
+                        }
+                        
                     }
                 }
             }
@@ -139,7 +140,14 @@ namespace EasyBillingService
                     text = File.ReadAllText(CONFIGURATIONFILEPATH);
                 }
                 
-                text = text.Replace(oldValue,newValue);
+                if (text.Contains(oldValue))
+                {
+                    text = text.Replace(oldValue,newValue);
+                }
+                else
+                {
+                    text += "\n"+ newValue;
+                }
                 File.WriteAllText(CONFIGURATIONFILEPATH,text);
             }
 
@@ -157,8 +165,16 @@ namespace EasyBillingService
                 {
                     text = File.ReadAllText(CONFIGURATIONFILEPATH);
                 }
+
+                if (text.Contains(oldValue))
+                {
+                    text = text.Replace(oldValue,newValue);
+                }
+                else
+                {
+                    text += "\n"+ newValue;
+                }
                 
-                text = text.Replace(oldValue,newValue);
                 File.WriteAllText(CONFIGURATIONFILEPATH,text);
             }
 

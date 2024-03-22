@@ -65,7 +65,7 @@ namespace EasyBillingService
 
         public void EnableButton(bool b)
         {
-            _mainWindow.EnableButton(b);
+            _mainWindow.EnableCreateButton(b);
         }
     }
 }

@@ -17,12 +17,12 @@ namespace EasyBillingService
         private string _lastOpenedFileText = "lastOpenedFile = ";
         private string _templatePathText = "templatePath = ";
 
-        private FileEntry _selectedTemplate;
-
 
         public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_lastOpenedFile) ? "":_lastOpenedFile;
         public string TemplatePath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
         public double CurrentBillingAddress { get; private set; }
+
+        public FileEntry SelectedTemplate { get; private set; }
 
         public ApplicationModel()
         {
@@ -200,9 +200,15 @@ namespace EasyBillingService
 
         public void setSelectedTemplate(FileEntry selectedItem)
         {
-            _selectedTemplate = selectedItem;
+            SelectedTemplate = selectedItem;
         }
     }
+
+        public void CreateNewBilling(string path)
+        {
+            
+        }
+        
     
     public struct Entry
     {
@@ -236,6 +242,10 @@ namespace EasyBillingService
             FileName = array[array.Length - 1].Split('.')[0];
         }
 
+        public string FullFileName()
+        {
+            return FileName + "." + FileType;
+        }
         public override string ToString()
         {
             return this.FileName;

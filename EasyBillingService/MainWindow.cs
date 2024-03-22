@@ -40,6 +40,7 @@ namespace EasyBillingService
 
         private void CreateBillingButton_Click(object sender, EventArgs e)
         {
+            ApplicationManager.Instance.CreateBillingFromTemplate();
         }
 
         public void setNewTemplateEntry(FileEntry entry)
@@ -56,7 +57,7 @@ namespace EasyBillingService
             ApplicationManager.Instance.TemplateSelected(selectedItem);
         }
 
-        public void EnableButton(bool b)
+        public void EnableCreateButton(bool b)
         {
             this.CreateBillingButton.Enabled = b;
         }

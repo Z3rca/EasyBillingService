@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
+using SixLabors.ImageSharp.Drawing;
+using Path = System.IO.Path;
 
 namespace EasyBillingService
 {
@@ -70,7 +72,7 @@ namespace EasyBillingService
         public void ChangeBillingBookAdress()
         {
             var dialog = new System.Windows.Forms.OpenFileDialog();
-            dialog.Filter= "Excel Datein(*.xlsx)|*.xlsx";
+            dialog.Filter= FileFormatHelper.FileFormatDisplay("Excel Datein(*.xlsx)",".xlsx");
             dialog.ShowDialog();
             
             var newPath = dialog.FileName;
@@ -81,7 +83,7 @@ namespace EasyBillingService
             {
                 _view.SetLastEntryText((Entry)entry);
             }
-            
+            _view.SetNewAdress(_model.CurrentBillingAddress.ToString());
         }
         
         public void ChangeTemplateFolder()
@@ -99,6 +101,26 @@ namespace EasyBillingService
         {
             _model.setSelectedTemplate(selectedItem);
             _view.EnableButton(true);
+        }
+
+        public void CreateBillingFromTemplate()
+        {
+            var dialog = new System.Windows.Forms.SaveFileDialog();
+            var selectedItem = _model.SelectedTemplate;
+
+            dialog.FileName = selectedItem.FullFileName();
+            dialog.Filter = FileFormatHelper.FileFormatDisplay("ExcelDatei(*.xlsx)", selectedItem.FileType);
+            dialog.ShowDialog();
+
+            if(dialog.ShowDialog() ==DialogResult.OK)
+            {
+                var path = Path.GetFullPath(dialog.FileName);
+                _model.CreateNewBilling(path);
+            }
+            
+            
+            
+            
         }
     }
 }

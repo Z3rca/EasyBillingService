@@ -41,7 +41,9 @@ namespace EasyBillingService
             if (lastEntry != null)
             {
                 _view.SetLastEntryText((Entry)lastEntry);
-            } 
+            }
+
+            _view.SetNewAdress(_model.CurrentAdress.ToString());
             
             Application.Run(_view.MainWindow);
         }

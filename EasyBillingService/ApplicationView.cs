@@ -47,6 +47,10 @@ namespace EasyBillingService
             _settingsWindow.UpdateTemnplatePath(path);
         }
 
-        
+
+        public void SetNewAdress(String currentAdress)
+        {
+            _mainWindow.SetNewAdress(currentAdress);
+        }
     }
 }

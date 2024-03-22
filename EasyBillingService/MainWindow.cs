@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Windows.Forms;
-using EasyBillingService.Extensions;
-using Microsoft.Office.Interop.Excel;
 
 namespace EasyBillingService
 {
@@ -26,7 +17,7 @@ namespace EasyBillingService
 
         public void UpdateLastBillingEntry(Entry entry)
         {
-            LastBillingNumber.Text = entry.Id.ToString();
+            LastBillingNumberText.Text = entry.Id.ToString();
             RecipientText.Text = entry.Recipient;
             DateText.Text = entry.dateText;
         }
@@ -37,15 +28,14 @@ namespace EasyBillingService
             
         }
 
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void BillingNumber_TextChanged(object sender, EventArgs e)
         {
             
         }
 
-        private void BillingNumber_TextChanged(object sender, EventArgs e)
+        public void SetNewAdress(string currentAdress)
         {
-            
+            NewAdressField.Text = currentAdress;
         }
     }
 }

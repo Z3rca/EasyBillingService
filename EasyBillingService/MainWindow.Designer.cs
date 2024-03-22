@@ -29,49 +29,55 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SetValue = new System.Windows.Forms.Button();
-            this.LastBillingNumber = new System.Windows.Forms.TextBox();
+            this.CreateBillingButton = new System.Windows.Forms.Button();
+            this.LastBillingNumberText = new System.Windows.Forms.TextBox();
             this.LastBillingAdressLabel = new System.Windows.Forms.Label();
             this.DateLabel = new System.Windows.Forms.Label();
             this.DateText = new System.Windows.Forms.TextBox();
             this.RecipientLabel = new System.Windows.Forms.Label();
             this.RecipientText = new System.Windows.Forms.TextBox();
             this.configurationButton = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.NewAdressLabel = new System.Windows.Forms.Label();
+            this.NewAdressField = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // SetValue
+            // CreateBillingButton
             // 
-            this.SetValue.Location = new System.Drawing.Point(98, 202);
-            this.SetValue.Name = "SetValue";
-            this.SetValue.Size = new System.Drawing.Size(75, 23);
-            this.SetValue.TabIndex = 2;
-            this.SetValue.Text = "Der Knopf";
-            this.SetValue.UseVisualStyleBackColor = true;
-            this.SetValue.Click += new System.EventHandler(this.ConfigurationButton_Click);
+            this.CreateBillingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ));
+            this.CreateBillingButton.Location = new System.Drawing.Point(65, 202);
+            this.CreateBillingButton.Name = "CreateBillingButton";
+            this.CreateBillingButton.Size = new System.Drawing.Size(143, 49);
+            this.CreateBillingButton.TabIndex = 2;
+            this.CreateBillingButton.Text = "Rechnung Erstellen";
+            this.CreateBillingButton.UseVisualStyleBackColor = true;
+            this.CreateBillingButton.Click += new System.EventHandler(this.CreateBillingButton_Click);
             // 
-            // LastBillingNumber
+            // LastBillingNumberText
             // 
-            this.LastBillingNumber.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.LastBillingNumber.Enabled = false;
-            this.LastBillingNumber.Location = new System.Drawing.Point(88, 93);
-            this.LastBillingNumber.Name = "LastBillingNumber";
-            this.LastBillingNumber.Size = new System.Drawing.Size(100, 20);
-            this.LastBillingNumber.TabIndex = 4;
-            this.LastBillingNumber.TextChanged += new System.EventHandler(this.BillingNumber_TextChanged);
+            this.LastBillingNumberText.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.LastBillingNumberText.Enabled = false;
+            this.LastBillingNumberText.Location = new System.Drawing.Point(89, 35);
+            this.LastBillingNumberText.Name = "LastBillingNumberText";
+            this.LastBillingNumberText.Size = new System.Drawing.Size(100, 20);
+            this.LastBillingNumberText.TabIndex = 4;
+            this.LastBillingNumberText.TextChanged += new System.EventHandler(this.BillingNumber_TextChanged);
             // 
             // LastBillingAdressLabel
             // 
-            this.LastBillingAdressLabel.Location = new System.Drawing.Point(88, 67);
+            this.LastBillingAdressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ));
+            this.LastBillingAdressLabel.Location = new System.Drawing.Point(89, 9);
             this.LastBillingAdressLabel.Name = "LastBillingAdressLabel";
-            this.LastBillingAdressLabel.Size = new System.Drawing.Size(186, 23);
+            this.LastBillingAdressLabel.Size = new System.Drawing.Size(100, 23);
             this.LastBillingAdressLabel.TabIndex = 1;
             this.LastBillingAdressLabel.Text = "Letzte Adresse";
             // 
             // DateLabel
             // 
-            this.DateLabel.Location = new System.Drawing.Point(203, 67);
+            this.DateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ));
+            this.DateLabel.Location = new System.Drawing.Point(204, 9);
             this.DateLabel.Name = "DateLabel";
-            this.DateLabel.Size = new System.Drawing.Size(186, 23);
+            this.DateLabel.Size = new System.Drawing.Size(100, 23);
             this.DateLabel.TabIndex = 1;
             this.DateLabel.Text = "Datum";
             // 
@@ -79,7 +85,7 @@
             // 
             this.DateText.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.DateText.Enabled = false;
-            this.DateText.Location = new System.Drawing.Point(203, 93);
+            this.DateText.Location = new System.Drawing.Point(204, 35);
             this.DateText.Name = "DateText";
             this.DateText.Size = new System.Drawing.Size(100, 20);
             this.DateText.TabIndex = 4;
@@ -87,9 +93,10 @@
             // 
             // RecipientLabel
             // 
-            this.RecipientLabel.Location = new System.Drawing.Point(309, 67);
+            this.RecipientLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ));
+            this.RecipientLabel.Location = new System.Drawing.Point(310, 9);
             this.RecipientLabel.Name = "RecipientLabel";
-            this.RecipientLabel.Size = new System.Drawing.Size(186, 23);
+            this.RecipientLabel.Size = new System.Drawing.Size(137, 23);
             this.RecipientLabel.TabIndex = 1;
             this.RecipientLabel.Text = "Rechnungs Empfänger";
             // 
@@ -97,7 +104,7 @@
             // 
             this.RecipientText.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.RecipientText.Enabled = false;
-            this.RecipientText.Location = new System.Drawing.Point(309, 93);
+            this.RecipientText.Location = new System.Drawing.Point(310, 35);
             this.RecipientText.Name = "RecipientText";
             this.RecipientText.Size = new System.Drawing.Size(100, 20);
             this.RecipientText.TabIndex = 4;
@@ -113,17 +120,48 @@
             this.configurationButton.UseVisualStyleBackColor = true;
             this.configurationButton.Click += new System.EventHandler(this.ConfigurationButton_Click);
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Items.AddRange(new object[] { "A", "B", "C" });
+            this.listBox1.Location = new System.Drawing.Point(243, 156);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(417, 95);
+            this.listBox1.TabIndex = 6;
+            // 
+            // NewAdressLabel
+            // 
+            this.NewAdressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ));
+            this.NewAdressLabel.Location = new System.Drawing.Point(73, 131);
+            this.NewAdressLabel.Name = "NewAdressLabel";
+            this.NewAdressLabel.Size = new System.Drawing.Size(135, 23);
+            this.NewAdressLabel.TabIndex = 7;
+            this.NewAdressLabel.Text = "Neue Adresse:";
+            // 
+            // NewAdressField
+            // 
+            this.NewAdressField.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.NewAdressField.Enabled = false;
+            this.NewAdressField.Location = new System.Drawing.Point(89, 157);
+            this.NewAdressField.Name = "NewAdressField";
+            this.NewAdressField.Size = new System.Drawing.Size(100, 20);
+            this.NewAdressField.TabIndex = 4;
+            this.NewAdressField.TextChanged += new System.EventHandler(this.BillingNumber_TextChanged);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(800, 286);
+            this.Controls.Add(this.NewAdressLabel);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.configurationButton);
             this.Controls.Add(this.RecipientText);
             this.Controls.Add(this.DateText);
-            this.Controls.Add(this.LastBillingNumber);
-            this.Controls.Add(this.SetValue);
+            this.Controls.Add(this.NewAdressField);
+            this.Controls.Add(this.LastBillingNumberText);
+            this.Controls.Add(this.CreateBillingButton);
             this.Controls.Add(this.RecipientLabel);
             this.Controls.Add(this.DateLabel);
             this.Controls.Add(this.LastBillingAdressLabel);
@@ -135,6 +173,11 @@
             this.PerformLayout();
         }
 
+        private System.Windows.Forms.Label NewAdressLabel;
+        private System.Windows.Forms.TextBox NewAdressField;
+
+        private System.Windows.Forms.ListBox listBox1;
+
         private System.Windows.Forms.Button configurationButton;
 
         private System.Windows.Forms.Label RecipientLabel;
@@ -143,9 +186,9 @@
         private System.Windows.Forms.Label DateLabel;
         private System.Windows.Forms.TextBox DateText;
 
-        private System.Windows.Forms.TextBox LastBillingNumber;
+        private System.Windows.Forms.TextBox LastBillingNumberText;
 
-        private System.Windows.Forms.Button SetValue;
+        private System.Windows.Forms.Button CreateBillingButton;
 
         private System.Windows.Forms.Label LastBillingAdressLabel;
 

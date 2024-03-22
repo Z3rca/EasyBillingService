@@ -22,6 +22,8 @@ namespace EasyBillingService
 
         public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_lastOpenedFile) ? "":_lastOpenedFile;
         public string TemplatepPath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
+        public double CurrentAdress => currentID;
+
         public ApplicationModel()
         {
             InitializeFormerFilePaths(); 

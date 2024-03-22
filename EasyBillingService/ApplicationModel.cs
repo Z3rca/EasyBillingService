@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -18,6 +18,8 @@ namespace EasyBillingService
         private string _templatePathText = "templatePath = ";
 
         private double currentID;
+
+        private FileEntry _selectedTemplate;
 
 
         public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_lastOpenedFile) ? "":_lastOpenedFile;
@@ -126,6 +128,25 @@ namespace EasyBillingService
             return newestEntry;
 
         }
+
+
+        public List<FileEntry> RetrieveTemplateList()
+        {
+            var entries = new List<FileEntry>();
+            if(Directory.Exists(_templatePath))
+            {
+                var filePaths = Directory.GetFiles(_templatePath);
+
+                foreach (var path in filePaths)
+                {
+                    var entry = new FileEntry(path);
+                    entries.Add(entry);
+                }
+                
+            }
+
+            return entries;
+        }
         
         
         
@@ -182,6 +203,11 @@ namespace EasyBillingService
 
             _templatePath = path;
         }
+
+        public void setSelectedTemplate(FileEntry selectedItem)
+        {
+            _selectedTemplate = selectedItem;
+        }
     }
     
     public struct Entry
@@ -199,6 +225,26 @@ namespace EasyBillingService
             
             DateTimeFormatInfo fmt = (new CultureInfo("hr-HR")).DateTimeFormat;
             dateText = DateTime.ToString("d", fmt);
+        }
+    }
+
+    public struct FileEntry
+    {
+        public string Path;
+        public string FileName;
+        public string FileType;
+        
+        public FileEntry(string path)
+        {
+            Path = path;
+            FileType = path.Split('.')[1];
+            var array = path.Split('\\');
+            FileName = array[array.Length - 1].Split('.')[0];
+        }
+
+        public override string ToString()
+        {
+            return this.FileName;
         }
     }
 }

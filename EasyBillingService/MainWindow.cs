@@ -37,5 +37,28 @@ namespace EasyBillingService
         {
             NewAdressField.Text = currentAdress;
         }
+
+        private void CreateBillingButton_Click(object sender, EventArgs e)
+        {
+        }
+
+        public void setNewTemplateEntry(FileEntry entry)
+        {
+            TemplateList.Items.Add(entry);
+        }
+
+        private void TemplateSelectionChanged(object sender, EventArgs e)
+        {
+            var obj = sender as ListBox;
+            if (obj == null) return;
+            
+            var selectedItem = (FileEntry) obj.SelectedItem;
+            ApplicationManager.Instance.TemplateSelected(selectedItem);
+        }
+
+        public void EnableButton(bool b)
+        {
+            this.CreateBillingButton.Enabled = b;
+        }
     }
 }

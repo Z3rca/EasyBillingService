@@ -37,13 +37,14 @@
             this.RecipientLabel = new System.Windows.Forms.Label();
             this.RecipientText = new System.Windows.Forms.TextBox();
             this.configurationButton = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.TemplateList = new System.Windows.Forms.ListBox();
             this.NewAdressLabel = new System.Windows.Forms.Label();
             this.NewAdressField = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // CreateBillingButton
             // 
+            this.CreateBillingButton.Enabled = false;
             this.CreateBillingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ));
             this.CreateBillingButton.Location = new System.Drawing.Point(65, 202);
             this.CreateBillingButton.Name = "CreateBillingButton";
@@ -120,14 +121,15 @@
             this.configurationButton.UseVisualStyleBackColor = true;
             this.configurationButton.Click += new System.EventHandler(this.ConfigurationButton_Click);
             // 
-            // listBox1
+            // TemplateList
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Items.AddRange(new object[] { "A", "B", "C" });
-            this.listBox1.Location = new System.Drawing.Point(243, 156);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(417, 95);
-            this.listBox1.TabIndex = 6;
+            this.TemplateList.ColumnWidth = 1;
+            this.TemplateList.FormattingEnabled = true;
+            this.TemplateList.Location = new System.Drawing.Point(243, 156);
+            this.TemplateList.Name = "TemplateList";
+            this.TemplateList.Size = new System.Drawing.Size(417, 95);
+            this.TemplateList.TabIndex = 6;
+            this.TemplateList.SelectedValueChanged+= new System.EventHandler(this.TemplateSelectionChanged);
             // 
             // NewAdressLabel
             // 
@@ -155,7 +157,7 @@
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(800, 286);
             this.Controls.Add(this.NewAdressLabel);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.TemplateList);
             this.Controls.Add(this.configurationButton);
             this.Controls.Add(this.RecipientText);
             this.Controls.Add(this.DateText);
@@ -176,7 +178,7 @@
         private System.Windows.Forms.Label NewAdressLabel;
         private System.Windows.Forms.TextBox NewAdressField;
 
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox TemplateList;
 
         private System.Windows.Forms.Button configurationButton;
 

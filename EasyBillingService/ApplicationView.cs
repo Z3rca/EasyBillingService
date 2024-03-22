@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace EasyBillingService
@@ -51,6 +52,20 @@ namespace EasyBillingService
         public void SetNewAdress(String currentAdress)
         {
             _mainWindow.SetNewAdress(currentAdress);
+        }
+
+        public void SetTemplateEntries(List<FileEntry> list)
+        {
+            foreach (var entry in list)
+            {
+                _mainWindow.setNewTemplateEntry(entry);
+            }
+            
+        }
+
+        public void EnableButton(bool b)
+        {
+            _mainWindow.EnableButton(b);
         }
     }
 }

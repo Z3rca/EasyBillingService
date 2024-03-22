@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace EasyBillingService
@@ -20,6 +20,8 @@ namespace EasyBillingService
             _view = new ApplicationView();
             _view.UpdateBillingAdressPath(_model.LastOpenedBillingAdressBook);
             _view.UpdateTemplatePath(_model.TemplatepPath);
+            
+            InitalizeTemplateList();
         }
         
         public static ApplicationManager Instance
@@ -48,6 +50,11 @@ namespace EasyBillingService
             Application.Run(_view.MainWindow);
         }
 
+        public void InitalizeTemplateList()
+        {
+            var list = _model.RetrieveTemplateList();
+            _view.SetTemplateEntries(list);
+        }
 
         public void OpenConfiguration()
         {
@@ -58,6 +65,7 @@ namespace EasyBillingService
         {
             _view.ShowMainWindow();
         }
+        
 
         public void ChangeBillingBookAdress()
         {
@@ -85,6 +93,12 @@ namespace EasyBillingService
             _model.SetTemplatePath(newPath);
             
             _view.UpdateTemplatePath(newPath);
+        }
+
+        public void TemplateSelected(FileEntry selectedItem)
+        {
+            _model.setSelectedTemplate(selectedItem);
+            _view.EnableButton(true);
         }
     }
 }

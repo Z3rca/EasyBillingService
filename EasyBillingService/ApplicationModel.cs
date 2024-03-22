@@ -17,14 +17,12 @@ namespace EasyBillingService
         private string _lastOpenedFileText = "lastOpenedFile = ";
         private string _templatePathText = "templatePath = ";
 
-        private double currentID;
-
         private FileEntry _selectedTemplate;
 
 
         public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_lastOpenedFile) ? "":_lastOpenedFile;
-        public string TemplatepPath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
-        public double CurrentAdress => currentID;
+        public string TemplatePath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
+        public double CurrentBillingAddress { get; private set; }
 
         public ApplicationModel()
         {
@@ -116,7 +114,7 @@ namespace EasyBillingService
 
             
 
-            currentID = newestEntry.Id + 1;
+            CurrentBillingAddress = newestEntry.Id + 1;
             
             
            // workbook.Save();
@@ -128,8 +126,7 @@ namespace EasyBillingService
             return newestEntry;
 
         }
-
-
+        
         public List<FileEntry> RetrieveTemplateList()
         {
             var entries = new List<FileEntry>();
@@ -147,9 +144,6 @@ namespace EasyBillingService
 
             return entries;
         }
-        
-        
-        
         
         public void SetBillingBookPath(string path)
         {
@@ -177,7 +171,7 @@ namespace EasyBillingService
             _lastOpenedFile = path;
         }
         
-        public void SetTemplatePath(string path)
+        public void SetTemplateFolderPath(string path)
         {
             var newValue = _templatePathText+ path;
             var oldValue = _templatePathText + (_templatePath);

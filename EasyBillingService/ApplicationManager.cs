@@ -19,7 +19,7 @@ namespace EasyBillingService
             _model = new ApplicationModel();
             _view = new ApplicationView();
             _view.UpdateBillingAdressPath(_model.LastOpenedBillingAdressBook);
-            _view.UpdateTemplatePath(_model.TemplatepPath);
+            _view.UpdateTemplatePath(_model.TemplatePath);
             
             InitalizeTemplateList();
         }
@@ -45,7 +45,7 @@ namespace EasyBillingService
                 _view.SetLastEntryText((Entry)lastEntry);
             }
 
-            _view.SetNewAdress(_model.CurrentAdress.ToString());
+            _view.SetNewAdress(_model.CurrentBillingAddress.ToString());
             
             Application.Run(_view.MainWindow);
         }
@@ -90,7 +90,7 @@ namespace EasyBillingService
             dialog.ShowDialog();
             
             var newPath = dialog.SelectedPath;
-            _model.SetTemplatePath(newPath);
+            _model.SetTemplateFolderPath(newPath);
             
             _view.UpdateTemplatePath(newPath);
         }

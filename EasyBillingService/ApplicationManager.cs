@@ -110,8 +110,6 @@ namespace EasyBillingService
 
             dialog.FileName = selectedItem.FullFileName();
             dialog.Filter = FileFormatHelper.FileFormatDisplay("ExcelDatei(*.xlsx)", selectedItem.FileType);
-            dialog.ShowDialog();
-
             if(dialog.ShowDialog() ==DialogResult.OK)
             {
                 var path = Path.GetFullPath(dialog.FileName);

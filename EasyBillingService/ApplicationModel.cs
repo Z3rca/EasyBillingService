@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using EasyBillingService.Extensions;
 using Microsoft.Office.Interop.Excel;
 
 namespace EasyBillingService
@@ -68,13 +69,11 @@ namespace EasyBillingService
             
             for (int  i = 1;  i < grid.GetLength(0); i++)
             {
-                
                 double value = 0;
                 if(!double.TryParse((String)grid[i, 1], out value))
                 {
                     continue;
                 }
-                
                 var date = (DateTime)grid[i, 2];
                 var entry = new Entry(value, date, (string)grid[i, 3]);
                 entries.Add(entry);
@@ -83,7 +82,6 @@ namespace EasyBillingService
             sheet = null;
             // workbook.Save();
             workbook.Close( false);
-           
             workbook = null;
             excelApplication.Quit();
             excelApplication = null;
@@ -92,10 +90,6 @@ namespace EasyBillingService
 
         public Entry? RetrieveLastBillingNumber()
         {
-           
-            
-            
-            
             var path = _lastOpenedFile;
 
             if (string.IsNullOrEmpty(path))
@@ -104,9 +98,7 @@ namespace EasyBillingService
             }
             
             var entries = RetrieveBillingEntriesFromExcelsheet(path);
-
             WaitForCleanUp();
-
             double maximum = 0;
 
           
@@ -209,21 +201,35 @@ namespace EasyBillingService
         {
             SelectedTemplate = selectedItem;
         }
+        
+        internal void CreateNewWorkBook(string path)
+        {
+            
+            var entries = new List<Entry>();
+            var excelApplication = new Microsoft.Office.Interop.Excel.Application();
+            Workbook newWorkbook = excelApplication.Workbooks.Add(SelectedTemplate.Path);
+
+            var sheet = newWorkbook.ActiveSheet as Worksheet;
+            modifyWorksheet(ref sheet);
+            newWorkbook.SaveAs(path);
+            newWorkbook.Close( false);
+            newWorkbook = null;
+            excelApplication.Quit();
+            excelApplication = null;
+        }
+
+        private void modifyWorksheet(ref Worksheet sheet)
+        {
+            sheet.SetCellValue<double>("B17",CurrentBillingAddress);
+
+        }
 
         public void CreateNewBilling(string path)
         {
-            var excelApplication = new Microsoft.Office.Interop.Excel.Application();
-            excelApplication.Visible = false;
-            Workbook newWorkbook = excelApplication.Workbooks.Add(SelectedTemplate.Path);
             
-            Workbook workbook = excelApplication.Workbooks.Open(path);
-            
-            
-                
-            workbook.Close(SaveChanges: false);
-            workbook = null;
-            excelApplication.Quit();
-            excelApplication = null;
+            CreateNewWorkBook(path);
+            WaitForCleanUp();
+            var i = 1;
         }
     }
     

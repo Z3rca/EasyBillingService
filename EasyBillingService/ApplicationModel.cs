@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 
 namespace EasyBillingService
@@ -55,32 +56,16 @@ namespace EasyBillingService
                 }
             }
         }
+        
 
-        public Entry? RetrieveLastBillingNumber()
+        internal List<Entry> RetrieveBillingEntriesFromExcelsheet(string path)
         {
-           
-            var excelApplication = new Microsoft.Office.Interop.Excel.Application();
-            
-            
-            var path = _lastOpenedFile;
-
-            if (string.IsNullOrEmpty(path))
-            {
-                return null;
-            }
-            Workbook workbook = excelApplication.Workbooks.Open(path);
-
-            
-
-            var sheet = workbook.ActiveSheet as Worksheet;
-            var billingIds = new List<(double idNumber, String date, String reciepient)>(); //ids are set here as numbers 
-
             var entries = new List<Entry>();
-            
-            
-            
+            var excelApplication = new Microsoft.Office.Interop.Excel.Application();
+            Workbook workbook = excelApplication.Workbooks.Open(path);
+            var sheet = workbook.ActiveSheet as Worksheet;
             var grid = sheet.Range["A1", "C1000"].Value as object[,];
-
+            
             for (int  i = 1;  i < grid.GetLength(0); i++)
             {
                 
@@ -91,40 +76,62 @@ namespace EasyBillingService
                 }
                 
                 var date = (DateTime)grid[i, 2];
-
                 var entry = new Entry(value, date, (string)grid[i, 3]);
-                
-                
                 entries.Add(entry);
             }
+            grid = null;
+            sheet = null;
+            // workbook.Save();
+            workbook.Close( false);
+           
+            workbook = null;
+            excelApplication.Quit();
+            excelApplication = null;
+            return entries;
+        }
+
+        public Entry? RetrieveLastBillingNumber()
+        {
+           
             
+            
+            
+            var path = _lastOpenedFile;
 
-            double maximum = 0;
-
-            if (!entries.Any())
+            if (string.IsNullOrEmpty(path))
             {
                 return null;
             }
             
-            
-            
-            
+            var entries = RetrieveBillingEntriesFromExcelsheet(path);
+
+            WaitForCleanUp();
+
+            double maximum = 0;
+
+          
+            if (!entries.Any())
+            {
+                return null;
+            }
             var newestEntry = entries.OrderByDescending(x => x.Id).First();
-
-
             
-
             CurrentBillingAddress = newestEntry.Id + 1;
-            
-            
-           // workbook.Save();
-            workbook.Close(SaveChanges: false);
-            workbook = null;
-            excelApplication.Quit();
-            excelApplication = null;
 
             return newestEntry;
 
+        }
+
+        private bool WaitForCleanUp()
+        {
+            do
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+            while (Marshal.AreComObjectsAvailableForCleanup());
+
+            return true;
         }
         
         public List<FileEntry> RetrieveTemplateList()
@@ -202,12 +209,24 @@ namespace EasyBillingService
         {
             SelectedTemplate = selectedItem;
         }
-    }
 
         public void CreateNewBilling(string path)
         {
+            var excelApplication = new Microsoft.Office.Interop.Excel.Application();
+            excelApplication.Visible = false;
+            Workbook newWorkbook = excelApplication.Workbooks.Add(SelectedTemplate.Path);
             
+            Workbook workbook = excelApplication.Workbooks.Open(path);
+            
+            
+                
+            workbook.Close(SaveChanges: false);
+            workbook = null;
+            excelApplication.Quit();
+            excelApplication = null;
         }
+    }
+    
         
     
     public struct Entry

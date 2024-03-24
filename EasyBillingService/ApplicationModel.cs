@@ -33,8 +33,7 @@ namespace EasyBillingService
         public ApplicationModel()
         {
             InitializeFormerFilePaths();
-            _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
-            RetrieveLastBillingNumber();
+            RefreshValues();
         }
         
         private void InitializeFormerFilePaths()
@@ -75,10 +74,19 @@ namespace EasyBillingService
             {
                 double value = 0;
                 if(grid[i,1] is DateTime) continue;
-                if(!double.TryParse((String)grid[i, 1], out value))
+                if (grid[i, 1] is double)
                 {
-                    continue;
+                    value = (double)grid[i, 1];
                 }
+                else
+                {
+                    if(!double.TryParse((String)grid[i, 1], out value))
+                    {
+                        continue;
+                    }
+                }
+                    
+                
                 var date = (DateTime)grid[i, 2];
 
                 var cellAdress = "A" + i; // this is dirty, I think there needs to be a better solution
@@ -220,12 +228,14 @@ namespace EasyBillingService
             var sheet = newWorkbook.ActiveSheet as Worksheet;
             var date = DateTime.Now;
             modifyWorksheet(ref sheet, date,CurrentBillingAddress);
-            
-            Workbook billingBook = excelApplication.Workbooks.Add(_billingBookPath);
+            var billingBook = excelApplication.Workbooks.Add(_billingBookPath);
             var billingBookSheet = billingBook.ActiveSheet as Worksheet;
 
             var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAdressData, CurrentBillingAddress, date);
-            
+            var structure = _tadBillingBookConfiguration.GetRowStructure();
+            enterNewAdressToBillingBook(billingBookSheet,cell,date,CurrentBillingAddress, structure);
+            billingBook.SaveAs(_billingBookPath);
+            billingBook.Close(false);
             newWorkbook.SaveAs(path);
             newWorkbook.Close( false);
             newWorkbook = null;
@@ -233,7 +243,37 @@ namespace EasyBillingService
             excelApplication = null;
         }
 
-       
+        private void enterNewAdressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double billingId, (string billingID, string date, string sum, string recipient) structure)
+        {
+            var rowNumber = 0;
+            if (!int.TryParse(target.Substring(1), out rowNumber))
+            {
+                //Handle exception
+                return;
+            }
+
+            var content = new String[4]{(structure.billingID + rowNumber),(structure.date + rowNumber),(structure.sum + rowNumber),(structure.recipient + rowNumber)};
+
+            var containsValues = false;
+            foreach (var cell in content)
+            {
+                var obj = billingBookSheet.GetCellValue<object>(cell);
+                if (obj != null)
+                {
+                    containsValues = true;
+                    break;
+                }
+            }
+            
+            if (containsValues)
+            {
+                var row = (Range) billingBookSheet.Rows[rowNumber];
+                row.Insert(); 
+            }
+            billingBookSheet.SetCellValue<double>(structure.billingID+rowNumber,billingId);
+            billingBookSheet.SetCellValue<DateTime>(structure.date+rowNumber,dateTime);
+        }
+
 
         private void modifyWorksheet(ref Worksheet sheet, DateTime dateTime, double address)
         {
@@ -242,19 +282,17 @@ namespace EasyBillingService
             sheet.SetCellValue<DateTime>("B18",dateTime);
             
         }
-        private void enterNewAdressToBillingBook(ref Worksheet billingBookSheet, DateTime dateTime, double address)
-        {
-            
-            billingBookSheet.SetCellValue<double>("B17",address);
-            billingBookSheet.SetCellValue<DateTime>("B18",dateTime);
-            
-        }
 
         public void CreateNewBilling(string path)
         {
             CreateNewWorkBook(path);
             WaitForCleanUp();
-            var i = 1;
+            RefreshValues();
+        }
+
+        public void RefreshValues()
+        {
+            _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
         }
     }
     
@@ -263,6 +301,7 @@ namespace EasyBillingService
     public struct Entry
     {
         public string CellId;
+        public int RowNumber;
         public Double Id;
         public DateTime DateTime;
         public String Recipient;
@@ -274,6 +313,9 @@ namespace EasyBillingService
             this.Id = id;
             DateTime = date;
             this.Recipient = recipient;
+            var rowNumber = 0;
+            int.TryParse(cellId.Substring(1),out rowNumber);
+            RowNumber = rowNumber;
             
             DateTimeFormatInfo fmt = (new CultureInfo("hr-HR")).DateTimeFormat;
             dateText = DateTime.ToString("d", fmt);

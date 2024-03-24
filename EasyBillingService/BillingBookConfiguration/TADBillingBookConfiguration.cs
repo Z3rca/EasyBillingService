@@ -20,7 +20,7 @@ namespace EasyBillingService.BillingBookConfiguration
 
             if (lastEntry.DateTime.Month == monthDate)
             {
-                return lastEntry.CellId; //the retrieving method should add the entry to below the current if the cell is full(add new entry to sheet). No need to handle all this here.
+                return "A"+(lastEntry.RowNumber+1);
             }
             else
             {
@@ -40,6 +40,16 @@ namespace EasyBillingService.BillingBookConfiguration
                 }
             }
             return "";
+        }
+
+        public override (string billingID, string date, string sum, string recipient) GetRowStructure()
+        {
+            (string billingID, string date, string sum, string recipient) structure = new ValueTuple<string, string, string, string>();
+            structure.billingID = "A";
+            structure.date = "B";
+            structure.sum = "D";
+            structure.recipient = "C";
+            return structure;
         }
     }
 }

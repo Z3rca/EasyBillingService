@@ -115,6 +115,17 @@ namespace EasyBillingService
                 var path = Path.GetFullPath(dialog.FileName);
                 _model.CreateNewBilling(path);
             }
+
+            UpdateValues();
+        }
+
+        private void UpdateValues()
+        {
+            var entry = _model.RetrieveLastBillingNumber().Value;
+            _view.SetLastEntryText(entry);
+            
+            _view.SetNewAdress(_model.CurrentBillingAddress.ToString());
+            
         }
 
         public Entry? GetLastBillingEntry()

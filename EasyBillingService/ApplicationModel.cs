@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using EasyBillingService.BillingBookConfiguration;
 using EasyBillingService.Extensions;
 using Microsoft.Office.Interop.Excel;
 
@@ -12,23 +13,27 @@ namespace EasyBillingService
     public class ApplicationModel
     {
         private string _path;
-        private string _lastOpenedFile;
+        private string _billingBookPath;
         private string _templatePath;
         public const string CONFIGURATIONFILEPATH = "..\\..\\configuration.cfg";
 
         private string _lastOpenedFileText = "lastOpenedFile = ";
         private string _templatePathText = "templatePath = ";
 
+        private TADBillingBookConfiguration _tadBillingBookConfiguration = new TADBillingBookConfiguration();
 
-        public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_lastOpenedFile) ? "":_lastOpenedFile;
+
+        public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_billingBookPath) ? "":_billingBookPath;
         public string TemplatePath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
+        private List<Entry> _billingAdressData =new List<Entry>();
         public double CurrentBillingAddress { get; private set; }
 
         public FileEntry SelectedTemplate { get; private set; }
 
         public ApplicationModel()
         {
-            InitializeFormerFilePaths(); 
+            InitializeFormerFilePaths();
+            _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
             RetrieveLastBillingNumber();
         }
         
@@ -46,7 +51,7 @@ namespace EasyBillingService
                     {
                         if (line.StartsWith(_lastOpenedFileText))
                         {
-                            _lastOpenedFile = line.Substring(_lastOpenedFileText.ToCharArray().Length);
+                            _billingBookPath = line.Substring(_lastOpenedFileText.ToCharArray().Length);
                         }
                         if (line.StartsWith(_templatePathText))
                         {
@@ -59,25 +64,29 @@ namespace EasyBillingService
         }
         
 
-        internal List<Entry> RetrieveBillingEntriesFromExcelsheet(string path)
+        private List<Entry> RetrieveBillingEntriesFromExcelsheet(string path)
         {
             var entries = new List<Entry>();
             var excelApplication = new Microsoft.Office.Interop.Excel.Application();
             Workbook workbook = excelApplication.Workbooks.Open(path);
             var sheet = workbook.ActiveSheet as Worksheet;
             var grid = sheet.Range["A1", "C1000"].Value as object[,];
-            
             for (int  i = 1;  i < grid.GetLength(0); i++)
             {
                 double value = 0;
+                if(grid[i,1] is DateTime) continue;
                 if(!double.TryParse((String)grid[i, 1], out value))
                 {
                     continue;
                 }
                 var date = (DateTime)grid[i, 2];
-                var entry = new Entry(value, date, (string)grid[i, 3]);
+
+                var cellAdress = "A" + i; // this is dirty, I think there needs to be a better solution
+                var entry = new Entry(value, date, (string)grid[i, 3], cellAdress);
                 entries.Add(entry);
             }
+
+            entries = entries.OrderByDescending(x => x.Id).ToList();
             grid = null;
             sheet = null;
             // workbook.Save();
@@ -90,14 +99,14 @@ namespace EasyBillingService
 
         public Entry? RetrieveLastBillingNumber()
         {
-            var path = _lastOpenedFile;
+            var path = _billingBookPath;
 
             if (string.IsNullOrEmpty(path))
             {
                 return null;
             }
-            
-            var entries = RetrieveBillingEntriesFromExcelsheet(path);
+
+            var entries = _billingAdressData;
             WaitForCleanUp();
             double maximum = 0;
 
@@ -106,10 +115,10 @@ namespace EasyBillingService
             {
                 return null;
             }
-            var newestEntry = entries.OrderByDescending(x => x.Id).First();
-            
-            CurrentBillingAddress = newestEntry.Id + 1;
 
+            var newestEntry = entries[0];
+            CurrentBillingAddress = newestEntry.Id + 1;
+            
             return newestEntry;
 
         }
@@ -138,7 +147,6 @@ namespace EasyBillingService
                     var entry = new FileEntry(path);
                     entries.Add(entry);
                 }
-                
             }
 
             return entries;
@@ -147,7 +155,7 @@ namespace EasyBillingService
         public void SetBillingBookPath(string path)
         {
             var newValue = _lastOpenedFileText+ path;
-            var oldValue = _lastOpenedFileText + (_lastOpenedFile);
+            var oldValue = _lastOpenedFileText + (_billingBookPath);
             if (File.Exists(CONFIGURATIONFILEPATH))
             {
                 var text = "";
@@ -167,7 +175,7 @@ namespace EasyBillingService
                 File.WriteAllText(CONFIGURATIONFILEPATH,text);
             }
 
-            _lastOpenedFile = path;
+            _billingBookPath = path;
         }
         
         public void SetTemplateFolderPath(string path)
@@ -202,7 +210,7 @@ namespace EasyBillingService
             SelectedTemplate = selectedItem;
         }
         
-        internal void CreateNewWorkBook(string path)
+        private void CreateNewWorkBook(string path)
         {
             
             var entries = new List<Entry>();
@@ -210,7 +218,14 @@ namespace EasyBillingService
             Workbook newWorkbook = excelApplication.Workbooks.Add(SelectedTemplate.Path);
 
             var sheet = newWorkbook.ActiveSheet as Worksheet;
-            modifyWorksheet(ref sheet);
+            var date = DateTime.Now;
+            modifyWorksheet(ref sheet, date,CurrentBillingAddress);
+            
+            Workbook billingBook = excelApplication.Workbooks.Add(_billingBookPath);
+            var billingBookSheet = billingBook.ActiveSheet as Worksheet;
+
+            var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAdressData, CurrentBillingAddress, date);
+            
             newWorkbook.SaveAs(path);
             newWorkbook.Close( false);
             newWorkbook = null;
@@ -218,15 +233,25 @@ namespace EasyBillingService
             excelApplication = null;
         }
 
-        private void modifyWorksheet(ref Worksheet sheet)
-        {
-            sheet.SetCellValue<double>("B17",CurrentBillingAddress);
+       
 
+        private void modifyWorksheet(ref Worksheet sheet, DateTime dateTime, double address)
+        {
+            
+            sheet.SetCellValue<double>("B17",address);
+            sheet.SetCellValue<DateTime>("B18",dateTime);
+            
+        }
+        private void enterNewAdressToBillingBook(ref Worksheet billingBookSheet, DateTime dateTime, double address)
+        {
+            
+            billingBookSheet.SetCellValue<double>("B17",address);
+            billingBookSheet.SetCellValue<DateTime>("B18",dateTime);
+            
         }
 
         public void CreateNewBilling(string path)
         {
-            
             CreateNewWorkBook(path);
             WaitForCleanUp();
             var i = 1;
@@ -237,13 +262,15 @@ namespace EasyBillingService
     
     public struct Entry
     {
+        public string CellId;
         public Double Id;
-        private DateTime DateTime;
+        public DateTime DateTime;
         public String Recipient;
 
         public String dateText;
-        public Entry(double id, DateTime date, string recipient)
+        public Entry(double id, DateTime date, string recipient, string cellId)
         {
+            CellId = cellId;
             this.Id = id;
             DateTime = date;
             this.Recipient = recipient;

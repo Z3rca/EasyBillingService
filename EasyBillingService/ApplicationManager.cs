@@ -37,7 +37,7 @@ namespace EasyBillingService
                 return _instance;
             }
         }
-        
+
         public void Init()
         {
             var lastEntry = _model.RetrieveLastBillingNumber();
@@ -78,7 +78,7 @@ namespace EasyBillingService
             var newPath = dialog.FileName;
             _model.SetBillingBookPath(newPath);
             _view.UpdateBillingAdressPath(newPath);
-            var entry = _model.RetrieveLastBillingNumber();
+            var entry = GetLastBillingEntry();
             if (entry != null)
             {
                 _view.SetLastEntryText((Entry)entry);
@@ -115,10 +115,12 @@ namespace EasyBillingService
                 var path = Path.GetFullPath(dialog.FileName);
                 _model.CreateNewBilling(path);
             }
-            
-            
-            
-            
+        }
+
+        public Entry? GetLastBillingEntry()
+        {
+            //handle already set
+            return _model.RetrieveLastBillingNumber();
         }
     }
 }

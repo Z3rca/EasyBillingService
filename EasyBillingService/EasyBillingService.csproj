@@ -88,6 +88,9 @@
         <Compile Include="ApplicationManager.cs" />
         <Compile Include="ApplicationModel.cs" />
         <Compile Include="ApplicationView.cs" />
+        <Compile Include="BillingBookConfiguration\BaseBillingBookConfiguration.cs" />
+        <Compile Include="BillingBookConfiguration\TADBillingBookConfiguration.cs" />
+        <Compile Include="ExcelApplicationManager.cs" />
         <Compile Include="Extensions\ExcelSheetExtensions.cs" />
         <Compile Include="FileFormatHelper.cs" />
         <Compile Include="MainWindow.cs">
@@ -96,8 +99,8 @@
         <Compile Include="MainWindow.Designer.cs">
             <DependentUpon>MainWindow.cs</DependentUpon>
         </Compile>
-        <Compile Include="Program.cs"/>
-        <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Program.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="SettingsWindow.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -131,7 +134,7 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <None Include="App.config"/>
+        <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
       <COMReference Include="Excel">

@@ -12,7 +12,6 @@ namespace EasyBillingService
 {
     public class ApplicationModel
     {
-        private string _path;
         private string _billingBookPath;
         private string _templatePath;
         public const string CONFIGURATIONFILEPATH = "..\\..\\configuration.cfg";
@@ -38,38 +37,46 @@ namespace EasyBillingService
         
         private void InitializeFormerFilePaths()
         {
-            var configurationPath = ApplicationModel.CONFIGURATIONFILEPATH;
-            if (File.Exists(configurationPath))
-            {
+            if (!File.Exists(CONFIGURATIONFILEPATH))
+            { 
+                //TODO handle exception
+                return;
+            } 
                 
-                using (var stream = File.OpenRead(configurationPath))
-                {
-                    var lines = File.ReadLines(configurationPath);
+            using (File.OpenRead(CONFIGURATIONFILEPATH))
+            {
+                var lines = File.ReadLines(CONFIGURATIONFILEPATH);
 
-                    foreach (var line in lines)
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith(_lastOpenedFileText))
                     {
-                        if (line.StartsWith(_lastOpenedFileText))
-                        {
-                            _billingBookPath = line.Substring(_lastOpenedFileText.ToCharArray().Length);
-                        }
-                        if (line.StartsWith(_templatePathText))
-                        {
-                            _templatePath = line.Substring(_templatePathText.ToCharArray().Length);
-                        }
-                        
+                        _billingBookPath = line.Substring(_lastOpenedFileText.ToCharArray().Length);
                     }
+                    if (line.StartsWith(_templatePathText))
+                    {
+                        _templatePath = line.Substring(_templatePathText.ToCharArray().Length);
+                    }
+                        
                 }
             }
         }
         
 
-        private List<Entry> RetrieveBillingEntriesFromExcelsheet(string path)
+        private static List<Entry> RetrieveBillingEntriesFromExcelsheet(string path)
         {
             var entries = new List<Entry>();
             var excelApplication = new Microsoft.Office.Interop.Excel.Application();
             Workbook workbook = excelApplication.Workbooks.Open(path);
             var sheet = workbook.ActiveSheet as Worksheet;
+            if (sheet == null)
+            {
+                //TODO handle exception
+                
+                return entries;
+            }
             var grid = sheet.Range["A1", "C1000"].Value as object[,];
+            
             for (int  i = 1;  i < grid.GetLength(0); i++)
             {
                 double value = 0;
@@ -105,7 +112,7 @@ namespace EasyBillingService
             return entries;
         }
 
-        public Entry? RetrieveLastBillingNumber()
+        public Entry? RetrieveLastBillingEntry()
         {
             var path = _billingBookPath;
 
@@ -116,9 +123,8 @@ namespace EasyBillingService
 
             var entries = _billingAdressData;
             WaitForCleanUp();
-            double maximum = 0;
 
-          
+
             if (!entries.Any())
             {
                 return null;
@@ -131,7 +137,7 @@ namespace EasyBillingService
 
         }
 
-        private bool WaitForCleanUp()
+        private static bool WaitForCleanUp()
         {
             do
             {
@@ -233,7 +239,7 @@ namespace EasyBillingService
 
             var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAdressData, CurrentBillingAddress, date);
             var structure = _tadBillingBookConfiguration.GetRowStructure();
-            enterNewAdressToBillingBook(billingBookSheet,cell,date,CurrentBillingAddress, structure);
+            EnterNewAdressToBillingBook(billingBookSheet,cell,date,CurrentBillingAddress, structure);
             billingBook.SaveAs(_billingBookPath);
             billingBook.Close(false);
             newWorkbook.SaveAs(path);
@@ -243,7 +249,7 @@ namespace EasyBillingService
             excelApplication = null;
         }
 
-        private void enterNewAdressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double billingId, (string billingID, string date, string sum, string recipient) structure)
+        private void EnterNewAdressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double billingId, (string billingID, string date, string sum, string recipient) structure)
         {
             var rowNumber = 0;
             if (!int.TryParse(target.Substring(1), out rowNumber))
@@ -290,7 +296,7 @@ namespace EasyBillingService
             RefreshValues();
         }
 
-        public void RefreshValues()
+        private void RefreshValues()
         {
             _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
         }

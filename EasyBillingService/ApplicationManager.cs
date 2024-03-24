@@ -40,7 +40,7 @@ namespace EasyBillingService
 
         public void Init()
         {
-            var lastEntry = _model.RetrieveLastBillingNumber();
+            var lastEntry = _model.RetrieveLastBillingEntry();
 
             if (lastEntry != null)
             {
@@ -121,7 +121,7 @@ namespace EasyBillingService
 
         private void UpdateValues()
         {
-            var entry = _model.RetrieveLastBillingNumber().Value;
+            var entry = _model.RetrieveLastBillingEntry().Value;
             _view.SetLastEntryText(entry);
             
             _view.SetNewAdress(_model.CurrentBillingAddress.ToString());
@@ -131,7 +131,7 @@ namespace EasyBillingService
         public Entry? GetLastBillingEntry()
         {
             //handle already set
-            return _model.RetrieveLastBillingNumber();
+            return _model.RetrieveLastBillingEntry();
         }
     }
 }

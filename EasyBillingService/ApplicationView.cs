@@ -9,13 +9,17 @@ namespace EasyBillingService
         
         private MainWindow _mainWindow;
         private SettingsWindow _settingsWindow;
-        
+        private readonly ValidationWindow _validationWindow;
+
         public MainWindow MainWindow => _mainWindow;
 
         public ApplicationView()
         {
             _mainWindow =new MainWindow();
             _settingsWindow = new SettingsWindow();
+            _validationWindow = new ValidationWindow();
+
+
         }
 
         public void ShowSettings()
@@ -29,7 +33,15 @@ namespace EasyBillingService
         {
             _mainWindow.Activate();
             _settingsWindow.Hide();
+            _validationWindow.Hide();
             _mainWindow.Show();
+        }
+        
+        public void ShowValidation()
+        {
+            _validationWindow.Activate();
+            _mainWindow.Hide();
+            _validationWindow.Show();
         }
         
         
@@ -66,6 +78,12 @@ namespace EasyBillingService
         public void EnableButton(bool b)
         {
             _mainWindow.EnableCreateButton(b);
+        }
+
+
+        public void AddValidationEntries(List<Entry> data)
+        {
+            _validationWindow.AddEntries(data);
         }
     }
 }

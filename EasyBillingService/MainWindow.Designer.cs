@@ -29,6 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.CreateBillingButton = new System.Windows.Forms.Button();
             this.LastBillingNumberText = new System.Windows.Forms.TextBox();
             this.LastBillingAdressLabel = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@
             this.TemplateList = new System.Windows.Forms.ListBox();
             this.NewAdressLabel = new System.Windows.Forms.Label();
             this.NewAdressField = new System.Windows.Forms.TextBox();
+            this.ValidationButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBillingButton
@@ -129,7 +131,7 @@
             this.TemplateList.Name = "TemplateList";
             this.TemplateList.Size = new System.Drawing.Size(417, 95);
             this.TemplateList.TabIndex = 6;
-            this.TemplateList.SelectedValueChanged+= new System.EventHandler(this.TemplateSelectionChanged);
+            this.TemplateList.SelectedValueChanged += new System.EventHandler(this.TemplateSelectionChanged);
             // 
             // NewAdressLabel
             // 
@@ -150,6 +152,16 @@
             this.NewAdressField.TabIndex = 4;
             this.NewAdressField.TextChanged += new System.EventHandler(this.BillingNumber_TextChanged);
             // 
+            // ValidationButton
+            // 
+            this.ValidationButton.Image = ( (System.Drawing.Image)( resources.GetObject("ValidationButton.Image") ) );
+            this.ValidationButton.Location = new System.Drawing.Point(707, 12);
+            this.ValidationButton.Name = "ValidationButton";
+            this.ValidationButton.Size = new System.Drawing.Size(50, 50);
+            this.ValidationButton.TabIndex = 5;
+            this.ValidationButton.UseVisualStyleBackColor = true;
+            this.ValidationButton.Click += new System.EventHandler(this.ValidationButton_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -158,6 +170,7 @@
             this.ClientSize = new System.Drawing.Size(800, 286);
             this.Controls.Add(this.NewAdressLabel);
             this.Controls.Add(this.TemplateList);
+            this.Controls.Add(this.ValidationButton);
             this.Controls.Add(this.configurationButton);
             this.Controls.Add(this.RecipientText);
             this.Controls.Add(this.DateText);
@@ -174,6 +187,8 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Button ValidationButton;
 
         private System.Windows.Forms.Label NewAdressLabel;
         private System.Windows.Forms.TextBox NewAdressField;

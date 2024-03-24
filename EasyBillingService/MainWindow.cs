@@ -14,6 +14,11 @@ namespace EasyBillingService
         {
             ApplicationManager.Instance.OpenConfiguration();
         }
+        
+        private void ValidationButton_Click(object sender, EventArgs e)
+        {
+            ApplicationManager.Instance.OpenValidation();
+        }
 
         public void UpdateLastBillingEntry(Entry entry)
         {

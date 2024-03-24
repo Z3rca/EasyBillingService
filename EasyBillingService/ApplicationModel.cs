@@ -29,6 +29,22 @@ namespace EasyBillingService
 
         public FileEntry SelectedTemplate { get; private set; }
 
+        public List<Entry> BillingAddressData
+        {
+            get
+            {
+                if (_billingAdressData != null)
+                {
+                    return _billingAdressData;
+                }
+                else
+                {
+                    _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
+                    return _billingAdressData;
+                }  
+            }
+        }
+
         public ApplicationModel()
         {
             InitializeFormerFilePaths();
@@ -302,7 +318,6 @@ namespace EasyBillingService
         }
     }
     
-        
     
     public struct Entry
     {

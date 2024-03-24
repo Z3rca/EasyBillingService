@@ -68,6 +68,13 @@ namespace EasyBillingService
             _view.ShowMainWindow();
         }
         
+        public void OpenValidation()
+        {
+            _view.ShowValidation();
+            var data =_model.BillingAddressData;
+            _view.AddValidationEntries(data);
+        }
+        
 
         public void ChangeBillingBookAdress()
         {

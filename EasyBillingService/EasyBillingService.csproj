@@ -107,6 +107,12 @@
         <Compile Include="SettingsWindow.Designer.cs">
           <DependentUpon>SettingsWindow.cs</DependentUpon>
         </Compile>
+        <Compile Include="ValidationWindow.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="ValidationWindow.Designer.cs">
+          <DependentUpon>ValidationWindow.cs</DependentUpon>
+        </Compile>
         <EmbeddedResource Include="MainWindow.resx">
           <DependentUpon>MainWindow.cs</DependentUpon>
         </EmbeddedResource>
@@ -121,6 +127,9 @@
         </Compile>
         <EmbeddedResource Include="SettingsWindow.resx">
           <DependentUpon>SettingsWindow.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="ValidationWindow.resx">
+          <DependentUpon>ValidationWindow.cs</DependentUpon>
         </EmbeddedResource>
         <None Include="packages.config" />
         <None Include="Properties\Settings.settings">

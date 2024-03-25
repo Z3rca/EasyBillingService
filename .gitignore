@@ -37,3 +37,14 @@ EasyBillingService/.idea/
 *.scc
 *.pb
 *.user
+.idea/.idea.EasyBillingService/.idea/sonarlint/
+
+.idea/.idea.EasyBillingService/
+
+.idea/
+
+EasyBillingService/templates/
+
+EasyBillingService/cacheData.dat
+
+RAB 2024.xlsx

@@ -38,6 +38,9 @@ namespace EasyBillingService
             this.templatePathButton = new System.Windows.Forms.Button();
             this.TemplatePathTextBox = new System.Windows.Forms.TextBox();
             this.Return = new System.Windows.Forms.Button();
+            this.BillingPathTextBox = new System.Windows.Forms.TextBox();
+            this.BillingPathButton = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // billingBookPathText
@@ -102,11 +105,39 @@ namespace EasyBillingService
             this.Return.UseVisualStyleBackColor = true;
             this.Return.Click += new System.EventHandler(this.returnButton_Click);
             // 
+            // BillingsPathTextBox
+            // 
+            this.BillingPathTextBox.Location = new System.Drawing.Point(208, 238);
+            this.BillingPathTextBox.Name = "BillingPathTextBox";
+            this.BillingPathTextBox.Size = new System.Drawing.Size(418, 20);
+            this.BillingPathTextBox.TabIndex = 10;
+            // 
+            // BillingPathButton
+            // 
+            this.BillingPathButton.Location = new System.Drawing.Point(108, 238);
+            this.BillingPathButton.Name = "BillingPathButton";
+            this.BillingPathButton.Size = new System.Drawing.Size(75, 21);
+            this.BillingPathButton.TabIndex = 9;
+            this.BillingPathButton.Text = "Öffnen...";
+            this.BillingPathButton.UseVisualStyleBackColor = true;
+            this.BillingPathButton.Click += new System.EventHandler(billingButton_Click);
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(208, 212);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(280, 23);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Rechnungen";
+            // 
             // SettingsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.BillingPathTextBox);
+            this.Controls.Add(this.BillingPathButton);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.Return);
             this.Controls.Add(this.TemplatePathTextBox);
             this.Controls.Add(this.templatePathButton);
@@ -120,6 +151,10 @@ namespace EasyBillingService
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.TextBox BillingPathTextBox;
+        private System.Windows.Forms.Button BillingPathButton;
+        private System.Windows.Forms.Label label2;
 
         private System.Windows.Forms.Button Return;
 

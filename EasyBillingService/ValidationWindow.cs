@@ -18,17 +18,17 @@ namespace EasyBillingService
 
         public void AddEntries(List<Entry> entries)
         {
+            AddressListGrid.Items.Clear();
             foreach (var entry in entries)
             {
                 var id = entry.Id;
                 var recipient = entry.Recipient;
                 var date = entry.dateText; 
-               // string[] textEntry = {id.ToString(),date};
                 var textEntry = new ListViewItem(id.ToString());
                 textEntry.SubItems.Add(date);
                 textEntry.SubItems.Add(recipient);
                 
-                listView1.Items.Add(textEntry);
+                AddressListGrid.Items.Add(textEntry);
             }
         }
 

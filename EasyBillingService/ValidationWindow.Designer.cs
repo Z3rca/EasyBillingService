@@ -33,7 +33,7 @@ namespace EasyBillingService
         private void InitializeComponent()
         {
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.AddressListGrid = new System.Windows.Forms.ListView();
             this.BillingAdressHeader = new System.Windows.Forms.ColumnHeader();
             this.DateHeader = new System.Windows.Forms.ColumnHeader();
             this.RecipientHeader = new System.Windows.Forms.ColumnHeader();
@@ -43,21 +43,20 @@ namespace EasyBillingService
             // 
             // listView1
             // 
-            this.listView1.AllowColumnReorder = true;
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.BillingAdressHeader, this.DateHeader, this.RecipientHeader, this.DataPathHeader });
-            this.listView1.FullRowSelect = true;
+            this.AddressListGrid.AllowColumnReorder = true;
+            this.AddressListGrid.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.BillingAdressHeader, this.DateHeader, this.RecipientHeader, this.DataPathHeader });
+            this.AddressListGrid.FullRowSelect = true;
             listViewGroup1.Header = "ListViewGroup";
             listViewGroup1.Name = "listViewGroup1";
-            this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] { listViewGroup1 });
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(12, 100);
-            this.listView1.Name = "listView1";
-            this.listView1.Scrollable = false;
-            this.listView1.ShowGroups = false;
-            this.listView1.Size = new System.Drawing.Size(776, 280);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.AddressListGrid.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] { listViewGroup1 });
+            this.AddressListGrid.HideSelection = false;
+            this.AddressListGrid.Location = new System.Drawing.Point(12, 100);
+            this.AddressListGrid.Name = "AddressListGrid";
+            this.AddressListGrid.ShowGroups = false;
+            this.AddressListGrid.Size = new System.Drawing.Size(776, 280);
+            this.AddressListGrid.TabIndex = 0;
+            this.AddressListGrid.UseCompatibleStateImageBehavior = false;
+            this.AddressListGrid.View = System.Windows.Forms.View.Details;
             // 
             // BillingAdressHeader
             // 
@@ -97,7 +96,7 @@ namespace EasyBillingService
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.Return);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.AddressListGrid);
             this.Name = "ValidationWindow";
             this.Text = "ValidationWindow";
             this.ResumeLayout(false);
@@ -111,7 +110,7 @@ namespace EasyBillingService
         private System.Windows.Forms.ColumnHeader DateHeader;
         private System.Windows.Forms.ColumnHeader RecipientHeader;
 
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView AddressListGrid;
 
         private System.Windows.Forms.DataGridTextBoxColumn dataGridTextBoxColumn1;
         private System.Windows.Forms.DataGridTextBoxColumn dataGridTextBoxColumn2;

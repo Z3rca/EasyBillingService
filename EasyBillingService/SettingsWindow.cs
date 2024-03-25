@@ -15,6 +15,11 @@ namespace EasyBillingService
             ApplicationManager.Instance.OpenMainWindow();
         }
         
+        private void billingButton_Click(object sender, EventArgs e)
+        {
+            ApplicationManager.Instance.SetBillingPath();
+        }
+        
         private void BillingBookAdressPathClicked(object sender, EventArgs e)
         {
             ApplicationManager.Instance.ChangeBillingBookAdress();
@@ -34,7 +39,7 @@ namespace EasyBillingService
             billingBookPathText.Text = entry;
         }
         
-        public void UpdateTemnplatePath(string entry)
+        public void UpdateTemplatePath(string entry)
         {
             TemplatePathTextBox.Text = entry;
         }
@@ -44,7 +49,11 @@ namespace EasyBillingService
             
         }
 
-     
+
+        public void UpdateBillingPath(string path)
+        {
+            BillingPathTextBox.Text = path;
+        }
     }
     
     

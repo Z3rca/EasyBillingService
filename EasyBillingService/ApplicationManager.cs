@@ -12,15 +12,12 @@ namespace EasyBillingService
 
         private ApplicationModel _model;
         private ApplicationView _view;
-
-    
-        
         
         private ApplicationManager()
         {
             _model = new ApplicationModel();
             _view = new ApplicationView();
-            _view.UpdateBillingAdressPath(_model.LastOpenedBillingAdressBook);
+            _view.UpdateBillingAdressPath(_model.BillingBookPath);
             _view.UpdateTemplatePath(_model.TemplatePath);
             
             InitalizeTemplateList();
@@ -36,6 +33,12 @@ namespace EasyBillingService
                 }
                 return _instance;
             }
+        }
+
+
+        public void StartValidation()
+        {
+            
         }
 
         public void Init()
@@ -99,7 +102,7 @@ namespace EasyBillingService
             dialog.ShowDialog();
             
             var newPath = dialog.SelectedPath;
-            _model.SetTemplateFolderPath(newPath);
+            _model.TemplatePath = newPath;
             
             _view.UpdateTemplatePath(newPath);
         }
@@ -139,6 +142,16 @@ namespace EasyBillingService
         {
             //handle already set
             return _model.RetrieveLastBillingEntry();
+        }
+
+        public void SetBillingPath()
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.ShowDialog();
+            
+            var newPath = dialog.SelectedPath;
+            _model.BillingPath = newPath;
+            _view.UpdateBillingPath(newPath);
         }
     }
 }

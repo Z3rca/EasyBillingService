@@ -90,6 +90,8 @@
         <Compile Include="ApplicationView.cs" />
         <Compile Include="BillingBookConfiguration\BaseBillingBookConfiguration.cs" />
         <Compile Include="BillingBookConfiguration\TADBillingBookConfiguration.cs" />
+        <Compile Include="ApplicationConfiguration.cs" />
+        <Compile Include="DataCacheManager.cs" />
         <Compile Include="ExcelApplicationManager.cs" />
         <Compile Include="Extensions\ExcelSheetExtensions.cs" />
         <Compile Include="FileFormatHelper.cs" />
@@ -107,6 +109,7 @@
         <Compile Include="SettingsWindow.Designer.cs">
           <DependentUpon>SettingsWindow.cs</DependentUpon>
         </Compile>
+        <Compile Include="ValidationModel.cs" />
         <Compile Include="ValidationWindow.cs">
           <SubType>Form</SubType>
         </Compile>

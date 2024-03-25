@@ -57,7 +57,11 @@ namespace EasyBillingService
         
         public void UpdateTemplatePath(string path)
         {
-            _settingsWindow.UpdateTemnplatePath(path);
+            _settingsWindow.UpdateTemplatePath(path);
+        }
+        public void UpdateBillingPath(string path)
+        {
+            _settingsWindow.UpdateBillingPath(path);
         }
 
 

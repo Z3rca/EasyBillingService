@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,18 +13,18 @@ namespace EasyBillingService
 {
     public class ApplicationModel
     {
-        private string _billingBookPath;
-        private string _templatePath;
-        public const string CONFIGURATIONFILEPATH = "..\\..\\configuration.cfg";
-
-        private string _lastOpenedFileText = "lastOpenedFile = ";
-        private string _templatePathText = "templatePath = ";
-
         private TADBillingBookConfiguration _tadBillingBookConfiguration = new TADBillingBookConfiguration();
 
+        private DataCacheManager _cacheManager = new DataCacheManager();
+        private ValidationModel _validationManager = new ValidationModel();
+        
+        public string BillingBookPath => ApplicationConfiguration.ConfigurationFile.BillingBookPath;
+        public string TemplatePath
+        {
+            get => ApplicationConfiguration.ConfigurationFile.TemplatePath;
+            set => ApplicationConfiguration.ConfigurationFile.TemplatePath = value;
+        }
 
-        public string LastOpenedBillingAdressBook =>  String.IsNullOrEmpty(_billingBookPath) ? "":_billingBookPath;
-        public string TemplatePath =>  String.IsNullOrEmpty(_templatePath) ? "":_templatePath;
         private List<Entry> _billingAdressData =new List<Entry>();
         public double CurrentBillingAddress { get; private set; }
 
@@ -39,49 +40,33 @@ namespace EasyBillingService
                 }
                 else
                 {
-                    _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
+                    _billingAdressData = RetrieveBillingEntriesFromExcelsheet(BillingBookPath);
                     return _billingAdressData;
                 }  
             }
         }
 
+        public string BillingPath
+        {
+            get => ApplicationConfiguration.ConfigurationFile.BillingPath;
+            set => ApplicationConfiguration.ConfigurationFile.BillingPath = value;
+        }
+
         public ApplicationModel()
         {
-            InitializeFormerFilePaths();
             RefreshValues();
-        }
-        
-        private void InitializeFormerFilePaths()
-        {
-            if (!File.Exists(CONFIGURATIONFILEPATH))
-            { 
-                //TODO handle exception
-                return;
-            } 
-                
-            using (File.OpenRead(CONFIGURATIONFILEPATH))
-            {
-                var lines = File.ReadLines(CONFIGURATIONFILEPATH);
-
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith(_lastOpenedFileText))
-                    {
-                        _billingBookPath = line.Substring(_lastOpenedFileText.ToCharArray().Length);
-                    }
-                    if (line.StartsWith(_templatePathText))
-                    {
-                        _templatePath = line.Substring(_templatePathText.ToCharArray().Length);
-                    }
-                        
-                }
-            }
         }
         
 
         private static List<Entry> RetrieveBillingEntriesFromExcelsheet(string path)
         {
             var entries = new List<Entry>();
+            if (string.IsNullOrEmpty(path))
+            {
+                
+                return entries;
+            }
+            
             var excelApplication = new Microsoft.Office.Interop.Excel.Application();
             Workbook workbook = excelApplication.Workbooks.Open(path);
             var sheet = workbook.ActiveSheet as Worksheet;
@@ -112,8 +97,8 @@ namespace EasyBillingService
                 
                 var date = (DateTime)grid[i, 2];
 
-                var cellAdress = "A" + i; // this is dirty, I think there needs to be a better solution
-                var entry = new Entry(value, date, (string)grid[i, 3], cellAdress);
+                var cellAddress = "A" + i; // this is dirty, I think there needs to be a better solution
+                var entry = new Entry(value, date, (string)grid[i, 3], cellAddress);
                 entries.Add(entry);
             }
 
@@ -130,7 +115,7 @@ namespace EasyBillingService
 
         public Entry? RetrieveLastBillingEntry()
         {
-            var path = _billingBookPath;
+            var path = BillingBookPath;
 
             if (string.IsNullOrEmpty(path))
             {
@@ -168,9 +153,9 @@ namespace EasyBillingService
         public List<FileEntry> RetrieveTemplateList()
         {
             var entries = new List<FileEntry>();
-            if(Directory.Exists(_templatePath))
+            if(Directory.Exists(TemplatePath))
             {
-                var filePaths = Directory.GetFiles(_templatePath);
+                var filePaths = Directory.GetFiles(TemplatePath);
 
                 foreach (var path in filePaths)
                 {
@@ -184,56 +169,9 @@ namespace EasyBillingService
         
         public void SetBillingBookPath(string path)
         {
-            var newValue = _lastOpenedFileText+ path;
-            var oldValue = _lastOpenedFileText + (_billingBookPath);
-            if (File.Exists(CONFIGURATIONFILEPATH))
-            {
-                var text = "";
-                using (var stream = File.OpenRead(CONFIGURATIONFILEPATH))
-                {
-                    text = File.ReadAllText(CONFIGURATIONFILEPATH);
-                }
-                
-                if (text.Contains(oldValue))
-                {
-                    text = text.Replace(oldValue,newValue);
-                }
-                else
-                {
-                    text += "\n"+ newValue;
-                }
-                File.WriteAllText(CONFIGURATIONFILEPATH,text);
-            }
-
-            _billingBookPath = path;
+            ApplicationConfiguration.ConfigurationFile.BillingBookPath = path;
         }
         
-        public void SetTemplateFolderPath(string path)
-        {
-            var newValue = _templatePathText+ path;
-            var oldValue = _templatePathText + (_templatePath);
-            if (File.Exists(CONFIGURATIONFILEPATH))
-            {
-                var text = "";
-                using (var stream = File.OpenRead(CONFIGURATIONFILEPATH))
-                {
-                    text = File.ReadAllText(CONFIGURATIONFILEPATH);
-                }
-
-                if (text.Contains(oldValue))
-                {
-                    text = text.Replace(oldValue,newValue);
-                }
-                else
-                {
-                    text += "\n"+ newValue;
-                }
-                
-                File.WriteAllText(CONFIGURATIONFILEPATH,text);
-            }
-
-            _templatePath = path;
-        }
 
         public void setSelectedTemplate(FileEntry selectedItem)
         {
@@ -250,13 +188,16 @@ namespace EasyBillingService
             var sheet = newWorkbook.ActiveSheet as Worksheet;
             var date = DateTime.Now;
             modifyWorksheet(ref sheet, date,CurrentBillingAddress);
-            var billingBook = excelApplication.Workbooks.Add(_billingBookPath);
+            var billingBook = excelApplication.Workbooks.Add(BillingBookPath);
             var billingBookSheet = billingBook.ActiveSheet as Worksheet;
 
             var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAdressData, CurrentBillingAddress, date);
             var structure = _tadBillingBookConfiguration.GetRowStructure();
-            EnterNewAdressToBillingBook(billingBookSheet,cell,date,CurrentBillingAddress, structure);
-            billingBook.SaveAs(_billingBookPath);
+            EnterNewAddressToBillingBook(billingBookSheet,cell,date,CurrentBillingAddress, structure);
+            
+           
+            
+            billingBook.SaveAs(BillingBookPath);
             billingBook.Close(false);
             newWorkbook.SaveAs(path);
             newWorkbook.Close( false);
@@ -265,7 +206,7 @@ namespace EasyBillingService
             excelApplication = null;
         }
 
-        private void EnterNewAdressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double billingId, (string billingID, string date, string sum, string recipient) structure)
+        private void EnterNewAddressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double billingId, (string billingID, string date, string sum, string recipient) structure)
         {
             var rowNumber = 0;
             if (!int.TryParse(target.Substring(1), out rowNumber))
@@ -307,17 +248,64 @@ namespace EasyBillingService
 
         public void CreateNewBilling(string path)
         {
+            var address = CurrentBillingAddress;
             CreateNewWorkBook(path);
+            _cacheManager.EnterAdress(address,path);
             WaitForCleanUp();
             RefreshValues();
         }
 
         private void RefreshValues()
         {
-            _billingAdressData = RetrieveBillingEntriesFromExcelsheet(_billingBookPath);
+            _billingAdressData = RetrieveBillingEntriesFromExcelsheet(BillingBookPath);
+        }
+
+
+        public void ValidateData()
+        {
+            List<ValidatedEntry> results = new List<ValidatedEntry>();
+            var entries = _billingAdressData;
+            foreach (var entry in entries)
+            {
+                var address = entry.Id;
+                
+                var filePath = _cacheManager.GetDataPath(address);
+
+                bool pathIsValid = File.Exists(filePath);
+
+                if (!pathIsValid)
+                {
+                    var result = new ValidatedEntry(address, false, false, false, false, false);
+                    results.Add(result);
+                    return;
+                }
+                
+                
+
+
+            }
         }
     }
-    
+
+    public struct ValidatedEntry
+    {
+        public ValidatedEntry(double id, bool pathIsValid, bool wasModifiedInTheMeanTime, bool sumsAreMatching, bool recipientWasChanged, bool datesAreMatching)
+        {
+            Id = id;
+            PathIsValid = pathIsValid;
+            WasModifiedInTheMeanTime = wasModifiedInTheMeanTime;
+            SumsAreMatching = sumsAreMatching;
+            RecipientWasChanged = recipientWasChanged;
+            DatesAreMatching = datesAreMatching;
+        }
+        public double Id;
+        public bool PathIsValid;
+        public bool WasModifiedInTheMeanTime;
+        public bool SumsAreMatching;
+        public bool RecipientWasChanged;
+        public bool DatesAreMatching;
+        
+    }
     
     public struct Entry
     {

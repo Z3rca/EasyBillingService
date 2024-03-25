@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace EasyBillingService
@@ -46,16 +45,6 @@ namespace EasyBillingService
             SaveCacheFile();
         }
 
-        public CacheEntry AccessPath(double address)
-        {
-            if (_cacheFile.ContainsKey(address))
-            {
-                return _cacheFile[address];
-            }
-
-            return null;
-        }
-
         private void LoadCacheFile()
         {
             var exists = File.Exists(filepath);
@@ -82,23 +71,25 @@ namespace EasyBillingService
 
         private void SaveCacheFile()
         {
+            //TODO binary data
             var data = _cacheFile.Values.ToArray();
             XmlSerializer serializer = new XmlSerializer(typeof(CacheEntry[]));
-            using (var stream = File.Open(filepath, FileMode.Create))
+            using (TextWriter textWriter = new StreamWriter(filepath))
             {
-                using (var writer = new BinaryWriter(stream, Encoding.UTF8, false))
-                {
-                    writer.Write(1.250F);
-                    writer.Write(@"c:\Temp");
-                    writer.Write(10);
-                    writer.Write(true);
-                }
+                serializer.Serialize(textWriter,data);
             }
-            
         }
-        
-        
-        
+
+
+        public DateTime? GetLastModified(double address)
+        {
+            if(_cacheFile.ContainsKey(address))
+            {
+                return _cacheFile[address].LastModified;
+            }
+
+            return null;
+        }
     }
     
     

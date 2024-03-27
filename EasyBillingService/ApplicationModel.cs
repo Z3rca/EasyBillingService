@@ -17,6 +17,7 @@ namespace EasyBillingService
 
         private DataCacheManager _cacheManager = new DataCacheManager();
         private ValidationModel _validationManager = new ValidationModel();
+        private ExcelStandbyManager _standbyManager = new ExcelStandbyManager();
         
         public string BillingBookPath => ApplicationConfiguration.ConfigurationFile.BillingBookPath;
         public string TemplatePath
@@ -25,7 +26,7 @@ namespace EasyBillingService
             set => ApplicationConfiguration.ConfigurationFile.TemplatePath = value;
         }
 
-        private List<Entry> _billingAdressData =new List<Entry>();
+        private List<Entry> _billingAddressData =new List<Entry>();
         public double CurrentBillingAddress { get; private set; }
 
         public FileEntry SelectedTemplate { get; private set; }
@@ -34,14 +35,14 @@ namespace EasyBillingService
         {
             get
             {
-                if (_billingAdressData != null)
+                if (_billingAddressData != null)
                 {
-                    return _billingAdressData;
+                    return _billingAddressData;
                 }
                 else
                 {
-                    _billingAdressData = RetrieveBillingEntriesFromExcelsheet(BillingBookPath);
-                    return _billingAdressData;
+                    _billingAddressData = RetrieveBillingEntriesFromExcelsheet(BillingBookPath);
+                    return _billingAddressData;
                 }  
             }
         }
@@ -122,7 +123,7 @@ namespace EasyBillingService
                 return null;
             }
 
-            var entries = _billingAdressData;
+            var entries = _billingAddressData;
             WaitForCleanUp();
 
 
@@ -183,6 +184,9 @@ namespace EasyBillingService
             
             var entries = new List<Entry>();
             var excelApplication = new Microsoft.Office.Interop.Excel.Application();
+
+            excelApplication.DisplayAlerts = false;
+            
             Workbook newWorkbook = excelApplication.Workbooks.Add(SelectedTemplate.Path);
 
             var sheet = newWorkbook.ActiveSheet as Worksheet;
@@ -191,11 +195,12 @@ namespace EasyBillingService
             var billingBook = excelApplication.Workbooks.Add(BillingBookPath);
             var billingBookSheet = billingBook.ActiveSheet as Worksheet;
 
-            var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAdressData, CurrentBillingAddress, date);
+            var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAddressData, CurrentBillingAddress, date);
             var structure = _tadBillingBookConfiguration.GetRowStructure();
-            EnterNewAddressToBillingBook(billingBookSheet,cell,date,CurrentBillingAddress, structure);
+            var sum = 0;
+            EnterNewAddressToBillingBook(billingBookSheet, cell, date, sum, CurrentBillingAddress,  structure);
             
-           
+           //TODO handle billing book is already open
             
             billingBook.SaveAs(BillingBookPath);
             billingBook.Close(false);
@@ -204,9 +209,11 @@ namespace EasyBillingService
             newWorkbook = null;
             excelApplication.Quit();
             excelApplication = null;
+
+            WaitForCleanUp();
         }
 
-        private void EnterNewAddressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double billingId, (string billingID, string date, string sum, string recipient) structure)
+        private void EnterNewAddressToBillingBook(Worksheet billingBookSheet,string target, DateTime dateTime, double sum, double billingId, (string billingID, string date, string sum, string recipient) structure)
         {
             var rowNumber = 0;
             if (!int.TryParse(target.Substring(1), out rowNumber))
@@ -235,6 +242,7 @@ namespace EasyBillingService
             }
             billingBookSheet.SetCellValue<double>(structure.billingID+rowNumber,billingId);
             billingBookSheet.SetCellValue<DateTime>(structure.date+rowNumber,dateTime);
+            billingBookSheet.SetCellValue<double>(structure.sum+rowNumber,sum);
         }
 
 
@@ -257,14 +265,14 @@ namespace EasyBillingService
 
         private void RefreshValues()
         {
-            _billingAdressData = RetrieveBillingEntriesFromExcelsheet(BillingBookPath);
+            _billingAddressData = RetrieveBillingEntriesFromExcelsheet(BillingBookPath);
         }
 
 
         public void ValidateData()
         {
             List<ValidatedEntry> results = new List<ValidatedEntry>();
-            var entries = _billingAdressData;
+            var entries = _billingAddressData;
             foreach (var entry in entries)
             {
                 var address = entry.Id;
@@ -353,6 +361,37 @@ namespace EasyBillingService
             
 
             return false;
+        }
+
+        public void SetStandby(string path)
+        {
+            _standbyManager.ConnectToWorksheet(path);
+        }
+
+        public void TransferDataFromWorkSheet(Worksheet sheet)
+        {
+            var entries = new List<Entry>();
+            var excelApplication = new Microsoft.Office.Interop.Excel.Application();
+            excelApplication.DisplayAlerts = false;
+            var billingBook = excelApplication.Workbooks.Add(BillingBookPath);
+            var billingBookSheet = billingBook.ActiveSheet as Worksheet;
+            
+            var date = sheet.GetCellValue<DateTime>("B18");
+            var sum = sheet.GetCellValue<double>("F22");
+            var address = sheet.GetCellValue<double>("B17");
+            var cell = _tadBillingBookConfiguration.RetrieveCell(billingBookSheet, _billingAddressData, address, date);
+            var structure = _tadBillingBookConfiguration.GetRowStructure();
+
+            
+            EnterNewAddressToBillingBook(billingBookSheet, cell, date, sum, address,  structure);
+            
+           
+            //todo handle RAB open
+            billingBook.SaveAs(BillingBookPath);
+            billingBook.Close(false);
+            excelApplication.Quit();
+            excelApplication = null;
+            WaitForCleanUp();
         }
     }
 

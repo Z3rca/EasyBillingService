@@ -71,7 +71,7 @@ namespace EasyBillingService
 
         private void SaveCacheFile()
         {
-            //TODO binary data
+            //TODO binary data serialization
             var data = _cacheFile.Values.ToArray();
             XmlSerializer serializer = new XmlSerializer(typeof(CacheEntry[]));
             using (TextWriter textWriter = new StreamWriter(filepath))
@@ -79,7 +79,6 @@ namespace EasyBillingService
                 serializer.Serialize(textWriter,data);
             }
         }
-
 
         public DateTime? GetLastModified(double address)
         {

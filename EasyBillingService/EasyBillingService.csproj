@@ -93,6 +93,7 @@
         <Compile Include="ApplicationConfiguration.cs" />
         <Compile Include="DataCacheManager.cs" />
         <Compile Include="ExcelApplicationManager.cs" />
+        <Compile Include="ExcelStandbyManager.cs" />
         <Compile Include="Extensions\ExcelSheetExtensions.cs" />
         <Compile Include="FileFormatHelper.cs" />
         <Compile Include="MainWindow.cs">

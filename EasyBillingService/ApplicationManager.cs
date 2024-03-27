@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Microsoft.Office.Interop.Excel;
 using SixLabors.ImageSharp.Drawing;
+using Application = System.Windows.Forms.Application;
 using Path = System.IO.Path;
 
 namespace EasyBillingService
@@ -125,9 +127,11 @@ namespace EasyBillingService
                 var path = Path.GetFullPath(dialog.FileName);
                 _model.CreateNewBilling(path);
             }
-
             UpdateValues();
+            _model.SetStandby(dialog.FileName);
         }
+
+
 
         private void UpdateValues()
         {
@@ -152,6 +156,11 @@ namespace EasyBillingService
             var newPath = dialog.SelectedPath;
             _model.BillingPath = newPath;
             _view.UpdateBillingPath(newPath);
+        }
+
+        public void TransferChangesFromWorksheet(Worksheet sheet)
+        {
+            _model.TransferDataFromWorkSheet(sheet);
         }
     }
 }

@@ -18,6 +18,11 @@ namespace EasyBillingService.BillingBookConfiguration
             
             var monthDate = DateTime.Today.Month;
 
+            if (lastEntry.Id == address)
+            {
+                return "A"+(lastEntry.RowNumber);
+            }
+
             if (lastEntry.DateTime.Month == monthDate)
             {
                 return "A"+(lastEntry.RowNumber+1);

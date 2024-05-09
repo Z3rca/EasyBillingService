@@ -365,7 +365,9 @@ namespace EasyBillingService
 
         public void SetStandby(string path)
         {
-            _standbyManager.ConnectToWorksheet(path);
+            var t= _standbyManager.ConnectToWorksheet(path);
+            
+            Console.Write("hello");
         }
 
         public void TransferDataFromWorkSheet(Worksheet sheet)

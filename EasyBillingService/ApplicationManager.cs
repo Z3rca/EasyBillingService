@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 using SixLabors.ImageSharp.Drawing;
@@ -53,6 +54,7 @@ namespace EasyBillingService
             }
 
             _view.SetNewAdress(_model.CurrentBillingAddress.ToString());
+                
             
             Application.Run(_view.MainWindow);
         }
@@ -126,9 +128,11 @@ namespace EasyBillingService
             {
                 var path = Path.GetFullPath(dialog.FileName);
                 _model.CreateNewBilling(path);
+                
+                UpdateValues();
+                _model.SetStandby(dialog.FileName);
             }
-            UpdateValues();
-            _model.SetStandby(dialog.FileName);
+            
         }
 
 
@@ -161,6 +165,7 @@ namespace EasyBillingService
         public void TransferChangesFromWorksheet(Worksheet sheet)
         {
             _model.TransferDataFromWorkSheet(sheet);
+            UpdateValues();
         }
     }
 }

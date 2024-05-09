@@ -14,8 +14,9 @@ namespace EasyBillingService
         private bool _isClosed;
         private Worksheet _currentSheet;
         private string _currentPath;
-        public async void ConnectToWorksheet(string path)
+        public async Task ConnectToWorksheet(string path)
         {
+            _isClosed = false;
             if(_isStandBy) return;
             _currentPath = path;
             ExcelApplication = new Microsoft.Office.Interop.Excel.Application();
@@ -30,7 +31,7 @@ namespace EasyBillingService
 
             _currentSheet = _currentWorkBook.ActiveSheet as Worksheet;
 
-            var done = ExcelRunningAsync();
+            var done = await ExcelRunningAsync();
 
             
             _currentWorkBook.AfterSave-= WorkBookAfterSave;
@@ -86,9 +87,11 @@ namespace EasyBillingService
 
         private async Task<bool> ExcelRunningAsync()
         {
+             
             while (!_isClosed)
             {
-                Thread.Sleep(1000);
+
+                await Task.Delay(1000);
             }
             return true;
         }

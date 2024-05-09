@@ -7,6 +7,8 @@ riderModule.iml
 
 EasyBillingService/.idea/
 
+/.idea/
+
 # Files built by Visual Studio
 *_i.c
 *_p.c
